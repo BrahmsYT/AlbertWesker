@@ -1,0 +1,32 @@
+{
+  "common": {
+    "dashboard": "Panel",
+    "assessments": "Qiymətləndirmələr",
+    "scan": "Xarici Skan",
+    "findings": "Tapıntılar",
+    "risks": "Risk Reyestri",
+    "actions": "Aradan Qaldırılma",
+    "ai": "Süni İntellekt Köməkçisi",
+    "reports": "Hesabatlar",
+    "settings": "Ayarlar",
+    "signOut": "Çıxış",
+    "welcome": "{{type}} iş sahənizə xoş gəldiniz.",
+    "newAssessment": "Yeni Qiymətləndirmə",
+    "getStarted": "Pulsuz Başlayın",
+    "signIn": "Daxil Ol",
+    "feedback": "Rəy"
+  },
+  "feedback": {
+    "title": "Rəy Bildirin",
+    "category": "Kateqoriya",
+    "content": "Rəy",
+    "placeholder": "Nə düşündüyünüzü bizə bildirin...",
+    "submit": "Rəyi Göndər",
+    "success": "Təşəkkür edirik!",
+    "successMsg": "Rəyiniz uğurla göndərildi."
+  },
+  "landing": {
+    "title": "Süni İntellektlə İşləyən Kiber Risk və GRC Platforması",
+    "subtitle": "Təhlükəsizlik vəziyyətinizi qiymətləndirin, boşluqları çərçivələrlə uyğunlaşdırın və bir neçə dəqiqə ərzində prioritetləşdirilmiş aradan qaldırma yol xəritələri hazırlayın. Banklar və Şirkətlər üçün nəzərdə tutulub."
+  }
+}
