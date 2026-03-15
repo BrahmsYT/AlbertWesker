@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Results — {{ result.target }}</title>
+    <style>
+        :root {
+            --neon-blue: #00d9ff;
+            --neon-cyan: #00ffff;
+            --neon-green: #00ff00;
+            --neon-red: #ff0055;
+            --neon-yellow: #ffff00;
+            --dark-bg: #0a0e27;
+            --text: #ffffff;
+            --text-sec: #a8b8ff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #0f1a3e 100%);
+            color: var(--text);
+            font-family: 'Courier New', 'Segoe UI', sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        a {
+            color: var(--neon-blue);
+            text-decoration: none;
+        }
+        a:hover {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: rgba(15, 19, 41, 0.9);
+            border-bottom: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-blue);
+            letter-spacing: 2px;
+        }
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+        .nav-link {
+            color: var(--text-sec);
+            padding: 0.5rem 1rem;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .nav-link:hover {
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+        .lang-select {
+            padding: 0.6rem 1rem;
+            background: rgba(10, 14, 39, 0.8);
+            border: 1px solid var(--neon-blue);
+            border-radius: 4px;
+            color: var(--neon-cyan);
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            width: 100%;
+        }
+        .result-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .result-header h1 {
+            font-size: 2.5rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 15px var(--neon-blue);
+            margin-bottom: 1rem;
+        }
+        .result-target {
+            font-size: 1.2rem;
+            color: var(--text-sec);
+            margin-bottom: 1rem;
+        }
+        .risk-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .risk-card {
+            background: rgba(15, 19, 41, 0.8);
+            border: 2px solid;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+        .risk-safe {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.4);
+        }
+        .risk-warning {
+            border-color: var(--neon-yellow);
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.4);
+        }
+        .risk-danger {
+            border-color: var(--neon-red);
+            box-shadow: 0 0 30px rgba(255, 0, 85, 0.4);
+        }
+        .score-number {
+            font-size: 5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            letter-spacing: 3px;
+        }
+        .risk-safe .score-number {
+            color: var(--neon-green);
+            text-shadow: 0 0 20px var(--neon-green);
+        }
+        .risk-warning .score-number {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 20px var(--neon-yellow);
+        }
+        .risk-danger .score-number {
+            color: var(--neon-red);
+            text-shadow: 0 0 20px var(--neon-red);
+        }
+        .score-label {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .metadata {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .metadata-item {
+            background: rgba(0, 217, 255, 0.05);
+            border: 1px solid var(--neon-blue);
+            border-left: 3px solid var(--neon-cyan);
+            padding: 1rem;
+            border-radius: 4px;
+        }
+        .metadata-label {
+            font-size: 0.85rem;
+            color: var(--text-sec);
+            margin-bottom: 0.25rem;
+        }
+        .metadata-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+        }
+        .findings {
+            margin-top: 2rem;
+        }
+        .findings h2 {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-blue);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        .finding-card {
+            background: rgba(15, 19, 41, 0.8);
+            border-left: 3px solid;
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.1);
+        }
+        .finding-critical {
+            border-left-color: var(--neon-red);
+            background: rgba(255, 0, 85, 0.05);
+        }
+        .finding-high {
+            border-left-color: var(--neon-yellow);
+            background: rgba(255, 255, 0, 0.05);
+        }
+        .finding-medium {
+            border-left-color: var(--neon-blue);
+            background: rgba(0, 217, 255, 0.05);
+        }
+        .finding-low {
+            border-left-color: var(--neon-green);
+            background: rgba(0, 255, 0, 0.05);
+        }
+        .finding-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .finding-text {
+            color: var(--text-sec);
+            line-height: 1.6;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .table th {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--neon-cyan);
+            border-bottom: 2px solid var(--neon-blue);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+        }
+        .table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+        }
+        .table tr:hover {
+            background: rgba(0, 217, 255, 0.05);
+        }
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--neon-cyan);
+            text-decoration: none;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 20px var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-sec);
+            border-top: 2px solid var(--neon-blue);
+            background: rgba(15, 19, 41, 0.95);
+            margin-top: auto;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.1);
+        }
+        /* Remediation Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: rgba(15, 19, 41, 0.95);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.5);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+        .modal-close:hover {
+            color: var(--neon-blue);
+            transform: scale(1.2);
+        }
+        .modal-title {
+            color: var(--neon-cyan);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding-right: 2rem;
+        }
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+        .modal-section-title {
+            color: var(--neon-blue);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .modal-section-content {
+            color: var(--text-sec);
+            line-height: 1.6;
+        }
+        .modal-code {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 3px solid var(--neon-blue);
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin-top: 0.5rem;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 1rem; }
+            .navbar-nav { gap: 1rem; }
+            .container { padding: 1.5rem 1rem; }
+            .result-header h1 { font-size: 1.8rem; }
+            .score-number { font-size: 3rem; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; text-align: center; }
+            .modal-content { max-width: 95vw; padding: 1.5rem; }
+        }
+    </style>
+    <script src="/static/lang.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">⚔️ AlbertWesker</div>
+        <ul class="navbar-nav">
+            <li><a href="/" class="nav-link">Scanner</a></li>
+            <li><a href="/lists" class="nav-link">History</a></li>
+            <li><a href="/about" class="nav-link">About</a></li>
+        </ul>
+        {% if user %}
+        <div class="navbar-user">
+            <span class="user-info">{{ user.username }}{% if user.role == 'admin' %} (👑 Admin){% endif %}</span>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+        {% endif %}
+    </nav>
+
+    <div class="container">
+        <div class="result-header">
+            <h1>Scan Results</h1>
+            <p class="result-target">
+                <strong>{{ result.target }}</strong>
+                {% if result.is_whitelisted %}<span style="color: var(--neon-green); text-shadow: 0 0 10px var(--neon-green);">✓ TRUSTED</span>{% endif %}
+            </p>
+        </div>
+
+        <div class="risk-section">
+            <div class="risk-card risk-{{ result.risk_label | lower }}">
+                <div class="score-number">{{ result.risk_score }}</div>
+                <div class="score-label">{{ result.risk_label }}</div>
+                {% if result.findings %}
+                <div class="metadata">
+                    <div class="metadata-item">
+                        <div class="metadata-label">Findings</div>
+                        <div class="metadata-value">{{ result.findings | length }}</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">Open Ports</div>
+                        <div class="metadata-value">{{ result.scan_meta.get('open_ports_count', 0) }}</div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if result.findings %}
+        <div class="findings">
+            <h2>🛡️ Security Findings ({{ result.findings | length }})</h2>
+            
+            <!-- AWS Findings Section (MANDATORY - always shown) -->
+            {% set aws_findings = [] %}
+            {% set base_findings = [] %}
+            {% for f in result.findings %}
+                {% if f.code.startswith('AWS_') %}
+                    {% if aws_findings.append(f) %}{% endif %}
+                {% else %}
+                    {% if base_findings.append(f) %}{% endif %}
+                {% endif %}
+            {% endfor %}
+
+            <div style="background: rgba(0, 100, 200, 0.1); border: 2px solid #0066ff; border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="color: #0066ff; margin-bottom: 1rem; font-size: 1.3rem;">🔷 AWS Security Findings</h3>
+                
+                {% if aws_findings %}
+                    <!-- AWS findings detected: show summary + findings -->
+                    {% set aws_summary = result.scan_meta.get('aws_summary', {}) %}
+                    {% if aws_summary %}
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="background: rgba(0, 217, 255, 0.1); padding: 1rem; border-radius: 4px;">
+                            <div style="font-size: 0.85rem; color: #a0aec0;">AWS Risk Score</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #00d9ff;">{{ aws_summary.get('aws_score_contribution', 0) }}</div>
+                        </div>
+                        <div style="background: rgba(0, 217, 255, 0.1); padding: 1rem; border-radius: 4px;">
+                            <div style="font-size: 0.85rem; color: #a0aec0;">AWS Risk Level</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #00d9ff;">{{ aws_summary.get('aws_risk_label', 'None') }}</div>
+                        </div>
+                        {% if aws_summary.get('aws_services_detected') %}
+                        <div style="background: rgba(0, 217, 255, 0.1); padding: 1rem; border-radius: 4px; grid-column: 1 / -1;">
+                            <div style="font-size: 0.85rem; color: #a0aec0;">AWS Services Detected</div>
+                            <div style="font-size: 1rem; font-weight: 600; color: #00ffff;">{{ aws_summary.get('aws_services_detected') | join(', ') }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% for f in aws_findings %}
+                    <div class="finding-card finding-{{ f.severity | lower }}">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="font-weight: 700; color: #0066ff;">{{ f.code }}</span>
+                            <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #fff; background: rgba(0, 102, 255, 0.6); padding: 0.25rem 0.5rem; border-radius: 3px;">{{ f.severity }}</span>
+                        </div>
+                        <div style="font-weight: 600; color: var(--neon-cyan); margin-bottom: 0.5rem;">{{ f.title }}</div>
+                        <div style="color: #a0aec0; margin-bottom: 0.5rem;"><b>Evidence:</b> {{ f.evidence }}</div>
+                        <div style="color: #a0aec0;"><b>Recommendation:</b> {{ f.recommendation }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- NO AWS findings detected: show informative message -->
+                    <div style="padding: 1rem; text-align: center; color: #7dd3c0; font-style: italic;">
+                        ✔ No AWS-specific external security observations detected.
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Base Security Findings Section -->
+            {% if base_findings %}
+            <div>
+                <h3 style="color: var(--neon-cyan); margin-bottom: 1rem; font-size: 1.3rem;">🔍 General Security Findings</h3>
+                {% for finding in base_findings %}
+                <div class="finding-card finding-{{ finding.severity | lower }}">
+                    <div class="finding-header">
+                        <span class="finding-code">{{ finding.code }}</span>
+                        <span style="text-transform: uppercase; font-weight: 700;">{{ finding.severity }}</span>
+                    </div>
+                    <div style="font-weight: 600; color: var(--neon-cyan); margin-bottom: 0.5rem;">{{ finding.title }}</div>
+                    <div class="finding-text">
+                        <div style="margin-bottom: 0.5rem;"><b>Evidence:</b> {{ finding.evidence }}</div>
+                        <div><b>Recommendation:</b> {{ finding.recommendation }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+                <!-- NO base findings either: show overall "all clear" message -->
+                {% if not aws_findings %}
+                <div style="text-align: center; padding: 2rem; color: var(--neon-green); border: 2px solid var(--neon-green); border-radius: 8px; box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);">
+                    <strong>✓ No security findings detected - Domain appears secure</strong>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 2rem; color: var(--neon-green); border: 2px solid var(--neon-green); border-radius: 8px; box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);">
+            <strong>✓ No findings detected - Domain appears secure</strong>
+        </div>
+        {% endif %}
+
+        <div class="btn-group">
+            <a href="/" class="btn">← Back to Scanner</a>
+            <form action="/export-pdf" method="post" style="display: inline-flex; gap: 0.5rem; align-items: center;">
+                <input type="hidden" name="domain" value="{{ result.target }}">
+                <button type="submit" class="btn">📄 Export PDF</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Remediation Modal -->
+    <div class="modal-overlay" id="remediationModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">✕</button>
+            <div class="modal-title" id="modalTitle">Remediation Steps</div>
+            <div id="modalBody" style="min-height: 200px;">
+                <!-- Content will be inserted by JS -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 AlbertWesker</p>
+    </footer>
+    <script src="/static/lang.js"></script>
+    <script>
+        // Remediation modal logic (XSS-safe, i18n ready)
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('remediationModal');
+            const modalClose = document.getElementById('modalClose');
+            const modalBody = document.getElementById('modalBody');
+            const modalTitle = document.getElementById('modalTitle');
+
+            // Close modal on close button
+            if (modalClose) {
+                modalClose.addEventListener('click', () => {
+                    modal.classList.remove('active');
+                });
+            }
+
+            // Close modal on overlay click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            // Add remediation buttons to finding cards
+            const findingCards = document.querySelectorAll('.finding-card');
+            findingCards.forEach(card => {
+                const codeEl = card.querySelector('[style*="color: #0066ff"]') || card.querySelector('.finding-code');
+                if (!codeEl) return;
+                
+                const code = codeEl.textContent.trim();
+                if (!code) return;
+
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'btn';
+                button.style.marginTop = '1rem';
+                button.textContent = '🔧 View Remediation';
+                button.setAttribute('data-finding-code', code);
+                
+                button.addEventListener('click', () => {
+                    showRemediation(code);
+                });
+                
+                card.appendChild(button);
+            });
+
+            function showRemediation(findingCode) {
+                // Remediation mapping (hardcoded for security)
+                const remediationMap = {
+                    "MISSING_HSTS": {
+                        title: "Fix: Missing HSTS Header",
+                        steps: [
+                            {label: "Step 1", text: "Add HTTP response header:"},
+                            {code: "Strict-Transport-Security: max-age=31536000; includeSubDomains"},
+                            {label: "Step 2", text: "Test with curl:"},
+                            {code: "curl -I https://yourdomain.com | grep -i strict"},
+                        ]
+                    },
+                    "MISSING_CSP": {
+                        title: "Fix: Missing Content-Security-Policy Header",
+                        steps: [
+                            {label: "Step 1", text: "Define a basic CSP:"},
+                            {code: "Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'"},
+                            {label: "Step 2", text: "Test with browser DevTools (Console tab for CSP violations)"},
+                        ]
+                    },
+                    "TLS_FAILURE": {
+                        title: "Fix: TLS Connection Failure",
+                        steps: [
+                            {label: "Action", text: "Verify TLS certificate is installed and valid"},
+                            {label: "Test", text: "Use: openssl s_client -connect yourdomain.com:443"},
+                        ]
+                    },
+                    "MISSING_X_FRAME_OPTIONS": {
+                        title: "Fix: Missing X-Frame-Options Header",
+                        steps: [
+                            {label: "Step 1", text: "Add header to prevent clickjacking:"},
+                            {code: "X-Frame-Options: DENY"},
+                            {label: "Note", text: "Use SAMEORIGIN if embedding in same-origin frames is needed"},
+                        ]
+                    },
+                };
+
+                const remediation = remediationMap[findingCode] || {
+                    title: `Remediation: ${findingCode}`,
+                    steps: [{label: "Note", text: "Detailed remediation steps not yet available for this finding."}]
+                };
+
+                // Clear body
+                modalBody.innerHTML = '';
+
+                // Add title
+                if (modalTitle) {
+                    modalTitle.textContent = remediation.title;
+                }
+
+                // Add steps (textContent for XSS safety)
+                remediation.steps.forEach(step => {
+                    if (step.code) {
+                        const codeEl = document.createElement('div');
+                        codeEl.className = 'modal-code';
+                        codeEl.textContent = step.code;  // textContent = safe against XSS
+                        modalBody.appendChild(codeEl);
+                    } else if (step.label && step.text) {
+                        const section = document.createElement('div');
+                        section.className = 'modal-section';
+                        
+                        const labelEl = document.createElement('div');
+                        labelEl.className = 'modal-section-title';
+                        labelEl.textContent = step.label;
+                        section.appendChild(labelEl);
+                        
+                        const contentEl = document.createElement('div');
+                        contentEl.className = 'modal-section-content';
+                        contentEl.textContent = step.text;
+                        section.appendChild(contentEl);
+                        
+                        modalBody.appendChild(section);
+                    }
+                });
+
+                // Show modal
+                modal.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

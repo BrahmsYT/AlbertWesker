@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History — AlbertWesker</title>
+    <style>
+        :root {
+            --neon-blue: #00d9ff;
+            --neon-cyan: #00ffff;
+            --neon-green: #00ff00;
+            --neon-red: #ff0055;
+            --dark-bg: #0a0e27;
+            --text: #ffffff;
+            --text-sec: #a8b8ff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #0f1a3e 100%);
+            color: var(--text);
+            font-family: 'Courier New', 'Segoe UI', sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        a {
+            color: var(--neon-blue);
+            text-decoration: none;
+        }
+        a:hover {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: rgba(15, 19, 41, 0.9);
+            border-bottom: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-blue);
+            letter-spacing: 2px;
+        }
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+        .nav-link {
+            color: var(--text-sec);
+            padding: 0.5rem 1rem;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+        .lang-select {
+            padding: 0.6rem 1rem;
+            background: rgba(10, 14, 39, 0.8);
+            border: 1px solid var(--neon-blue);
+            border-radius: 4px;
+            color: var(--neon-cyan);
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            width: 100%;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 15px var(--neon-blue);
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        .toolbar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(10, 14, 39, 0.8);
+            border: 1px solid var(--neon-blue);
+            border-radius: 4px;
+            color: var(--neon-cyan);
+            font-family: inherit;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--neon-cyan);
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+        .btn-secondary {
+            background: rgba(0, 217, 255, 0.05);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            font-weight: 600;
+        }
+        .btn-secondary:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .table th {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--neon-cyan);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 700;
+            border-bottom: 2px solid var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+        }
+        .table tr:hover {
+            background: rgba(0, 217, 255, 0.05);
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: 1px solid;
+        }
+        .badge-safe {
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--neon-green);
+            border-color: var(--neon-green);
+        }
+        .badge-warning {
+            background: rgba(255, 255, 0, 0.1);
+            color: #ffff00;
+            border-color: #ffff00;
+        }
+        .badge-danger {
+            background: rgba(255, 0, 85, 0.1);
+            color: var(--neon-red);
+            border-color: var(--neon-red);
+        }
+        .section {
+            background: rgba(15, 19, 41, 0.7);
+            border: 2px solid var(--neon-blue);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            border-left: 3px solid;
+        }
+        .alert-success {
+            background: rgba(0, 255, 0, 0.05);
+            border-left-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-sec);
+            border-top: 2px solid var(--neon-blue);
+            background: rgba(15, 19, 41, 0.95);
+            margin-top: auto;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.1);
+        }
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .navbar-nav {
+                gap: 1rem;
+            }
+            .container {
+                padding: 1.5rem 1rem;
+            }
+            .toolbar {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <script src="/static/lang.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">⚔️ AlbertWesker</div>
+        <ul class="navbar-nav">
+            <li><a href="/" class="nav-link">Scanner</a></li>
+            <li><a href="/lists" class="nav-link active">History</a></li>
+            <li><a href="/about" class="nav-link">About</a></li>
+        </ul>
+        {% if user %}
+        <div class="navbar-user">
+            <span class="user-info">{{ user.username }}{% if user.role == 'admin' %} (👑 Admin){% endif %}</span>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+        {% endif %}
+    </nav>
+
+    <div class="container">
+        <h1>Scan History</h1>
+
+        {% if history %}
+        <div class="section">
+            <h2>All Scans</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Domain</th>
+                        <th>Risk Score</th>
+                        <th>Status</th>
+                        <th>Scanned At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for scan in history %}
+                    <tr>
+                        <td style="text-align: center; width: 40px;">
+                            <form action="/lists/history/delete" method="post" style="display:inline;" onsubmit="return confirm('Delete this scan?');">
+                                <input type="hidden" name="scan_id" value="{{ scan.id }}">
+                                <button type="submit" class="btn-delete" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0; color: var(--neon-red);" title="Delete scan">🗑️</button>
+                            </form>
+                        </td>
+                        <td>{{ scan.domain }}</td>
+                        <td>{{ scan.risk_score }}</td>
+                        <td>
+                            <span class="badge badge-{{ scan.risk_label | lower }}">{{ scan.risk_label }}</span>
+                        </td>
+                        <td style="font-size: 0.9rem; color: var(--text-sec);">{{ scan.scanned_at[:16].replace('T', ' ') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-success">
+            No scans yet
+        </div>
+        {% endif %}
+
+        <h2>Whitelist</h2>
+        <div class="section">
+            {% if whitelist %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in whitelist %}
+                    <tr>
+                        <td>{{ item.domain }}</td>
+                        <td>
+                            <form action="/lists/whitelist/remove" method="post" style="display:inline;">
+                                <input type="hidden" name="domain" value="{{ item.domain }}">
+                                <button type="submit" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p style="color: var(--text-sec);">Whitelist is empty</p>
+            {% endif %}
+        </div>
+
+        <a href="/" class="btn">Back</a>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 AlbertWesker</p>
+    </footer>
+</body>
+</html>

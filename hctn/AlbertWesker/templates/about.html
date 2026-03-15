@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — AlbertWesker</title>
+    <style>
+        :root {
+            --neon-blue: #00d9ff;
+            --neon-cyan: #00ffff;
+            --dark-bg: #0a0e27;
+            --text: #ffffff;
+            --text-sec: #a8b8ff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #0f1a3e 100%);
+            color: var(--text);
+            font-family: 'Courier New', 'Segoe UI', sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        a {
+            color: var(--neon-blue);
+            text-decoration: none;
+        }
+        a:hover {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: rgba(15, 19, 41, 0.9);
+            border-bottom: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-blue);
+            letter-spacing: 2px;
+        }
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+        .nav-link {
+            color: var(--text-sec);
+            padding: 0.5rem 1rem;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+        .lang-select {
+            padding: 0.6rem 1rem;
+            background: rgba(10, 14, 39, 0.8);
+            border: 1px solid var(--neon-blue);
+            border-radius: 4px;
+            color: var(--neon-cyan);
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .container {
+            flex: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            width: 100%;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 15px var(--neon-blue);
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 1.5rem 0 1rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        p {
+            line-height: 1.8;
+            color: var(--text-sec);
+            margin-bottom: 1rem;
+        }
+        ul {
+            margin-left: 1.5rem;
+            color: var(--text-sec);
+        }
+        li {
+            margin-bottom: 0.8rem;
+        }
+        strong {
+            color: var(--neon-cyan);
+        }
+        .section {
+            background: rgba(15, 19, 41, 0.7);
+            border: 2px solid var(--neon-blue);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--neon-cyan);
+            text-decoration: none;
+            margin-top: 1rem;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-sec);
+            border-top: 2px solid var(--neon-blue);
+            background: rgba(15, 19, 41, 0.95);
+            margin-top: auto;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.1);
+        }
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .navbar-nav {
+                gap: 1rem;
+            }
+            .container {
+                padding: 1.5rem 1rem;
+            }
+            h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+    <script src="/static/lang.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">⚔️ AlbertWesker</div>
+        <ul class="navbar-nav">
+            <li><a href="/" class="nav-link">Scanner</a></li>
+            <li><a href="/lists" class="nav-link">History</a></li>
+            <li><a href="/about" class="nav-link active">About</a></li>
+        </ul>
+        {% if user %}
+        <div class="navbar-user">
+            <span class="user-info">{{ user.username }}{% if user.role == 'admin' %} (👑 Admin){% endif %}</span>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+        {% endif %}
+    </nav>
+
+    <div class="container">
+        <h1>About AlbertWesker</h1>
+
+        <div class="section">
+            <h2>What is AlbertWesker?</h2>
+            <p>
+                AlbertWesker is a domain security scanning platform that helps you assess and monitor the security posture of any domain. 
+                We provide comprehensive threat analysis, vulnerability detection, and security recommendations.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Features</h2>
+            <ul>
+                <li><strong>Domain Analysis:</strong> Complete security scan of any domain with detailed findings.</li>
+                <li><strong>Risk Assessment:</strong> Risk scoring from 0-100 to identify threats quickly.</li>
+                <li><strong>Port Scanning:</strong> Detection of open ports and running services.</li>
+                <li><strong>History Tracking:</strong> Keep track of all your scans and results.</li>
+                <li><strong>English Only:</strong> Clean, focused interface in English.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>How It Works</h2>
+            <p>
+                Simply enter a domain name in the scanner, and AlbertWesker will:
+            </p>
+            <ul>
+                <li>Perform comprehensive security analysis</li>
+                <li>Check for known vulnerabilities</li>
+                <li>Scan for open ports and services</li>
+                <li>Generate a risk score</li>
+                <li>Provide detailed recommendations</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Privacy & Security</h2>
+            <p>
+                Your data is important to us. All scans are performed securely, and we do not store your domain scan details on our servers 
+                for longer than necessary. Your scanning history is maintained locally and can be exported anytime.
+            </p>
+        </div>
+
+        <a href="/" class="btn">Back to Scanner</a>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 AlbertWesker</p>
+    </footer>
+</body>
+</html>
