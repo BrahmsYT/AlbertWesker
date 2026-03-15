@@ -172,5 +172,40 @@ service cloud.firestore {
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }
+
+    // Scan Jobs - external security scans
+    match /scan_jobs/{jobId} {
+      allow read: if isOrgMember(resource.data.organizationId);
+      allow create: if isOrgMember(request.resource.data.organizationId) && 
+                       request.resource.data.organizationId is string &&
+                       request.resource.data.domain is string &&
+                       request.resource.data.status == 'queued';
+      allow update: if isOrgMember(resource.data.organizationId) &&
+                       (request.resource.data.organizationId == resource.data.organizationId &&
+                        request.resource.data.status in ['queued', 'running', 'completed', 'failed', 'cancelled']);
+      allow delete: if isOrgAdmin(resource.data.organizationId);
+    }
+
+    // Audit Logs - immutable append-only logs
+    match /audit_logs/{logId} {
+      allow read: if isOrgMember(resource.data.organizationId);
+      allow create: if isOrgMember(request.resource.data.organizationId) &&
+                       request.resource.data.userId is string &&
+                       request.resource.data.action is string &&
+                       request.resource.data.timestamp is string &&
+                       request.resource.data.outcome in ['success', 'failure'];
+      allow update, delete: if false; // Immutable logs
+    }
+
+    // Control Profiles - org-specific control baselines
+    match /control_profiles/{profileId} {
+      allow read: if isOrgMember(resource.data.organizationId);
+      allow create: if isOrgMember(request.resource.data.organizationId) &&
+                       request.resource.data.type in ['Bank', 'Company', 'Custom'] &&
+                       request.resource.data.controls is list;
+      allow update: if isOrgAdmin(resource.data.organizationId) &&
+                       request.resource.data.organizationId == resource.data.organizationId;
+      allow delete: if isOrgAdmin(resource.data.organizationId);
+    }
   }
 }
